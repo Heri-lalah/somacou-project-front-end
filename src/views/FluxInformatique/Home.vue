@@ -3,3 +3,5 @@
     <p>Blabla</p>
   </div>
 </template>
+<script>
+</script>
