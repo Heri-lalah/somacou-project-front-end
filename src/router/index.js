@@ -23,6 +23,26 @@ const routes = [
       {
         path : '',
         component : ()=> import('@/views/FluxInformatique/Home.vue')
+      },
+      {
+        path : 'production',
+        name : 'productionByInfoTeam',
+        component : ()=> import('@/views/FluxInformatique/Production.vue')
+      },
+      {
+        path : 'movement/increase',
+        name : 'movementIncreaseByInfoTeam',
+        component : ()=> import('@/views/FluxInformatique/Movement.vue')
+      },
+      {
+        path : 'movement/decrease',
+        name : 'movementDecreaseByInfoTeam',
+        component : ()=> import('@/views/FluxInformatique/Movement.vue')
+      },
+      {
+        path : 'movement/read',
+        name : 'readMovementByInfoTeam',
+        component : ()=> import('@/views/FluxInformatique/ReadMovement.vue')
       }
     ]
   }
