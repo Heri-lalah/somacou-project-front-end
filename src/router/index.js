@@ -1,6 +1,7 @@
 // Composables
 import { createRouter, createWebHistory } from 'vue-router';
 import LayoutInformatique from '@/layouts/fluxInformatique/Layout.vue';
+
 const routes = [
   {
     path: '/',
@@ -19,6 +20,7 @@ const routes = [
   {
     path : '/informatique',
     component : LayoutInformatique,
+    meta : {title : 'Flux informatique'},
     children : [
       {
         path : '',
@@ -52,5 +54,9 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
 })
+
+router.beforeEach((to, from) =>{
+  document.title = to.meta?.title ?? 'Somacou'
+});
 
 export default router
