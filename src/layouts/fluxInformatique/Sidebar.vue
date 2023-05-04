@@ -1,9 +1,8 @@
 <template>
-  <div>
-    <p class="font-weight-bold text-primary">ATELIERS</p>
+  <v-row>
     <WorkshopComponent :workshop-list="workshoplist"/>
     <ActionComponent :action-event="actionEvent"/>
-  </div>
+  </v-row>
 </template>
 <script setup>
 import { ref } from 'vue';

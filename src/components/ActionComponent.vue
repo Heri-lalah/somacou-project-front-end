@@ -1,4 +1,5 @@
 <template>
+<v-col class="mx-0 px-0" cols="6" md="12">
   <p class="font-weight-bold text-danger">ACTIONS</p>
   <v-list>
       <v-list-item nav title="Production" prepend-icon="mdi-folder-plus-outline" lines="false"
@@ -24,6 +25,7 @@
       </v-expand-transition>
   </v-list>
 
+</v-col>
 </template>
 <script setup>
 const props = defineProps({
