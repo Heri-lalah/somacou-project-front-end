@@ -161,6 +161,6 @@ const form = reactive({
 })
 
 watch(() => {
-   form.date = formattedDate(form.date),
+   form.date = formattedDate(form.date)
 })
 </script>
