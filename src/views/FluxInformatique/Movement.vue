@@ -7,7 +7,6 @@
           color="primary"
           label="Date"
           v-model="form.date"
-          @keyup="formattedDate"
           :rules="[ v => !!v || '*']"
           variant="underlined"
           required
@@ -139,7 +138,8 @@
   </div>
 </template>
 <script setup>
-import { ref, reactive, watch } from "vue";
+import { ref, reactive, watch} from "vue";
+import {formattedDate} from '@/helpers';
 const validForm =ref(false);
 const validField = ref([v => !! v || '']);
 
@@ -159,17 +159,8 @@ const form = reactive({
   sector : '',
   textRules : [v=> !! v || '*']
 })
-function formattedDate(){
-  let day = form.date.substring(0,2);
-  let month = form.date.substring(3,5);
-  let year = form.date.substring(6, form.date.length + 2);
-  if(form.date.length == 2 || form.date.length==5){
-    form.date = form.date + "/"
-  }
-  console.log(validField);
-  console.log('day :' + day + ' month : ' + month + ' year : ' + year)
-}
-watch(()=> {
-  console.log(form);
+
+watch(() => {
+   form.date = formattedDate(form.date),
 })
 </script>
