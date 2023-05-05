@@ -7,9 +7,12 @@
           color="primary"
           label="Date"
           v-model="form.date"
+          :error-messages="$v.date.$errors.map(e => e.$message = '')"
+          @input="$v.date.$touch"
+          @blur="$v.date.$touch"
+          required
           :rules="[ v => !!v || '*']"
           variant="underlined"
-          required
           ></v-text-field>
         </v-col>
         <v-col cols="4" md="3">
@@ -18,6 +21,9 @@
           v-model="form.toWorkshop"
           label="Atelier de déstination"
           variant="underlined"
+          :error-messages="$v.toWorkshop.$errors.map(e => e.$message = '')"
+          @input="$v.toWorkshop.$touch"
+          required
           ></v-text-field>
         </v-col>
         <v-col cols="4" md="3">
@@ -126,21 +132,27 @@
           <v-text-field
           color="primary"
           label="Secteur"
-          v-model="form.Sector"
+          v-model="form.sector"
           variant="underlined"
           ></v-text-field>
         </v-col>
       </v-row>
       <v-row justify="center">
-        <v-btn prepend-icon="mdi-content-save-edit-outline" color="primary" width="250">Valider</v-btn>
+        <v-btn type="submit" @click.prevent="handleSubmit" prepend-icon="mdi-content-save-edit-outline" color="primary" width="250">Valider</v-btn>
       </v-row>
     </v-form>
+    <v-snackbar v-model="snackbar" timeout="2000" :color="snackbarColor"> {{ snackbarMessage }}</v-snackbar>
   </div>
 </template>
 <script setup>
 import { ref, reactive, watch} from "vue";
 import {formattedDate} from '@/helpers';
+import useVuelidate from "@vuelidate/core";
+import { required } from "@vuelidate/validators";
 const validForm =ref(false);
+const snackbar = ref(false);
+const snackbarMessage = ref("");
+const snackbarColor = ref("");
 const validField = ref([v => !! v || '']);
 
 const form = reactive({
@@ -163,4 +175,39 @@ const form = reactive({
 watch(() => {
    form.date = formattedDate(form.date)
 })
+
+const rules = {
+  date : { required },
+  toWorkshop : { required },
+  // stockEnabled : {required},
+  // idBon : { required },
+  // quality : { required },
+  // color: { required },
+  // quantity : { required },
+  // objective : { required },
+  // sector : { required },
+}
+
+const $v = useVuelidate(rules, form);
+
+const formValidation=  async () => {
+  $v.value.$validate.call()
+  const validationErrors = $v.value.$errors;
+  return validationErrors.values
+}
+
+const handleSubmit = () => {
+  $v.value.$validate.call()
+  const validationErrors = $v.value.$errors;
+
+  if(validationErrors.length > 0){
+    snackbar.value = true;
+    snackbarMessage.value = "Juste test";
+    snackbarColor.value="danger"
+  }else{
+    snackbar.value = true;
+    snackbarMessage.value = "Juste test";
+    snackbarColor.value="success"
+  }
+}
 </script>
