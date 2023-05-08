@@ -13,7 +13,7 @@
       <v-list-item nav title="Mouvement"  prepend-icon="mdi-pencil-plus-outline" value="mouvement" lines="false"
           active-class="bg-danger"
           :active="actionEvent"
-          @click="actionEvent=true"
+          @click="[actionEvent=true, this.$router.push({name : 'readMovementByInfoTeam'})]"
       >
       </v-list-item>
       <v-expand-transition>

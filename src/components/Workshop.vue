@@ -6,8 +6,9 @@
       v-for="(item, i) in props.workshopList"
       :key="i"
       :value="item"
-      :lines="false"
+      lines="false"
       nav
+      @click="setActive(item)"
       density="comfortable"
       active-class="bg-primary"
       >
@@ -23,5 +24,10 @@
 const props = defineProps({
   workshopList : Array,
 });
-
+import { useWorkshopStore } from '@/store/app';
+const workshop = useWorkshopStore();
+const setActive = (param) => {
+  workshop.active = param.title;
+  console.log(workshop.active);
+}
 </script>

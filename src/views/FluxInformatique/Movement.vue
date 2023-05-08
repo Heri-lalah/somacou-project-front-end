@@ -16,7 +16,7 @@
           ></v-text-field>
         </v-col>
         <v-col cols="4" md="3">
-          <v-text-field
+          <v-autocomplete
           color="primary"
           v-model="form.toWorkshop"
           label="Atelier de déstination"
@@ -24,13 +24,16 @@
           :error-messages="$v.toWorkshop.$errors.map(e => e.$message = '')"
           @input="$v.toWorkshop.$touch"
           required
-          ></v-text-field>
+          :items="['Bleu', 'Vert', 'Jaune', 'Jaune poussin', 'Rouge fuschia']"
+          >
+          </v-autocomplete>
         </v-col>
         <v-col cols="4" md="3">
           <v-text-field
           color="primary"
           label="Numéro Bon"
           v-model="form.idBon"
+          :error-messages="$v.idBon.$errors.map(e => e.$message = '')"
           variant="underlined"
           ></v-text-field>
         </v-col>
@@ -51,6 +54,7 @@
           :label="form.stockEnabled ? 'combo Article' : 'Article  '"
           variant="underlined"
           v-model="form.article"
+          :error-messages="$v.article.$errors.map(e => e.$message = '')"
           ></v-text-field>
         </v-col>
         <v-col cols="4" md="3">
@@ -58,8 +62,7 @@
             label="Qualité"
             variant="underlined"
             v-model="form.quality"
-            :value="[1, 2, 3]"
-            :items="['1er Choix', '2ème Choix', '3ème Choix']"
+            :items="['1ER CHOIX', '2EME CHOIX', '3EME CHOIX']"
           ></v-select>
         </v-col>
         <v-col cols="4" md="3">
@@ -80,6 +83,7 @@
           color="primary"
           label="Qté demandé"
           v-model="form.quantity"
+          :error-messages="$v.quantity.$errors.map(e => e.$message = '')"
           type="number"
           variant="underlined"
           ></v-text-field>
@@ -87,7 +91,7 @@
         <v-col cols="6" md="3" class="py-0 my-0">
           <v-radio-group inline v-model="form.measure" class="mt-2">
               <v-radio label="KG" value="KG"  color="primary"></v-radio>
-              <v-radio label="PIECE" value="PIECE" color="primary"></v-radio>
+              <v-radio label="PIECE" value="PEACE" color="primary"></v-radio>
               <v-radio label="METRE" value="METRE" color="primary"></v-radio>
           </v-radio-group>
         </v-col>
@@ -95,7 +99,7 @@
           <v-text-field
           color="primary"
           label="Pièce"
-          v-model="form.quantityPiece"
+          v-model="form.quantityPeace"
           type="number"
           variant="underlined"
           ></v-text-field>
@@ -126,6 +130,7 @@
           color="primary"
           label="Objectif"
           v-model="form.objective"
+          :error-messages="$v.objective.$errors.map(e => e.$message = '')"
           variant="underlined"
           ></v-text-field>
         </v-col>
@@ -134,6 +139,7 @@
           color="primary"
           label="Secteur"
           v-model="form.sector"
+          :error-messages="$v.sector.$errors.map(e => e.$message = '')"
           variant="underlined"
           ></v-text-field>
         </v-col>
@@ -143,6 +149,11 @@
       </v-row>
     </v-form>
     <v-snackbar v-model="snackbar" timeout="2000" :color="snackbarColor">
+      <v-badge
+      color="warning"
+      :content="errorCount"
+      inline
+      ></v-badge>
       {{ snackbarMessage }}
     </v-snackbar>
   </div>
@@ -156,19 +167,23 @@ const validForm =ref(false);
 const snackbar = ref(false);
 const snackbarMessage = ref("");
 const snackbarColor = ref("");
+const errorCount = ref(null);
 const validField = ref([v => !! v || '']);
 
+import { useWorkshopStore } from "@/store/app";
+const workshop = useWorkshopStore();
 const form = reactive({
   date : "",
+  sourceWorkshop : workshop.active,
   toWorkshop : "",
   idBon : "",
   stockEnabled : true,
   article:"",
-  quality : 1,
+  quality : '1ER CHOIX',
   color: '',
   quantity : '',
   measure: 'KG',
-  quantityPiece : '',
+  quantityPeace : '',
   quantityWeight : '',
   quantityLength : '',
   objective : '',
@@ -186,8 +201,6 @@ const rules = {
   //stockEnabled : {required},
   article: {required},
   idBon : { required },
-  quality : { required },
-  color: { required },
   quantity : { required },
   objective : { required },
   sector : { required },
@@ -206,8 +219,9 @@ const handleSubmit = () => {
   const validationErrors = $v.value.$errors;
 
   if(validationErrors.length > 0){
+    errorCount.value = validationErrors.length
     snackbar.value = true;
-    snackbarMessage.value = "Juste test";
+    snackbarMessage.value = "Veillez remplir correctement tous les champs obligatoire";
     snackbarColor.value="danger"
   }else{
     snackbar.value = true;

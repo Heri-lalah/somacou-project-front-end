@@ -1,15 +1,14 @@
 <template>
   <v-row>
-    <WorkshopComponent :workshop-list="workshoplist"/>
+    <WorkshopComponent :workshop-list="workshoplistData.data"/>
     <ActionComponent :action-event="actionEvent"/>
   </v-row>
 </template>
 <script setup>
 import { ref } from 'vue';
-import workshop from '@/composables/workshop'
 import WorkshopComponent from '@/components/Workshop.vue';
 import ActionComponent from '@/components/ActionComponent.vue';
-const {getContent} = workshop();
-const workshoplist = getContent();
+import { useWorkshopStore } from '@/store/app';
+const workshoplistData = useWorkshopStore();
 const actionEvent = ref(false);
 </script>
