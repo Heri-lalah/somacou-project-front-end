@@ -50,6 +50,7 @@
           color="primary"
           :label="form.stockEnabled ? 'combo Article' : 'Article  '"
           variant="underlined"
+          v-model="form.article"
           ></v-text-field>
         </v-col>
         <v-col cols="4" md="3">
@@ -141,7 +142,9 @@
         <v-btn type="submit" @click.prevent="handleSubmit" prepend-icon="mdi-content-save-edit-outline" color="primary" width="250">Valider</v-btn>
       </v-row>
     </v-form>
-    <v-snackbar v-model="snackbar" timeout="2000" :color="snackbarColor"> {{ snackbarMessage }}</v-snackbar>
+    <v-snackbar v-model="snackbar" timeout="2000" :color="snackbarColor">
+      {{ snackbarMessage }}
+    </v-snackbar>
   </div>
 </template>
 <script setup>
@@ -160,6 +163,7 @@ const form = reactive({
   toWorkshop : "",
   idBon : "",
   stockEnabled : true,
+  article:"",
   quality : 1,
   color: '',
   quantity : '',
@@ -179,13 +183,14 @@ watch(() => {
 const rules = {
   date : { required },
   toWorkshop : { required },
-  // stockEnabled : {required},
-  // idBon : { required },
-  // quality : { required },
-  // color: { required },
-  // quantity : { required },
-  // objective : { required },
-  // sector : { required },
+  //stockEnabled : {required},
+  article: {required},
+  idBon : { required },
+  quality : { required },
+  color: { required },
+  quantity : { required },
+  objective : { required },
+  sector : { required },
 }
 
 const $v = useVuelidate(rules, form);
