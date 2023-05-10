@@ -1,6 +1,6 @@
 <template>
   <v-row>
-    <WorkshopComponent :workshop-list="workshoplistData.data"/>
+    <WorkshopComponent :workshop-list="appData.workshopdata"/>
     <ActionComponent :action-event="actionEvent"/>
   </v-row>
 </template>
@@ -8,7 +8,7 @@
 import { ref } from 'vue';
 import WorkshopComponent from '@/components/Workshop.vue';
 import ActionComponent from '@/components/ActionComponent.vue';
-import { useWorkshopStore } from '@/store/app';
-const workshoplistData = useWorkshopStore();
+import { useAppStore } from '@/store/app';
+const appData = useAppStore();
 const actionEvent = ref(false);
 </script>

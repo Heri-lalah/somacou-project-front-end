@@ -24,10 +24,9 @@
 const props = defineProps({
   workshopList : Array,
 });
-import { useWorkshopStore } from '@/store/app';
-const workshop = useWorkshopStore();
+import { useAppStore } from '@/store/app';
+const appData = useAppStore();
 const setActive = (param) => {
-  workshop.active = param.title;
-  console.log(workshop.active);
+  appData.ActiveworkshopSource = param.title;
 }
 </script>
