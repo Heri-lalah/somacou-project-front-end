@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-form v-model="validForm">
+    <v-form>
       <v-row class="py-0 my-0">
           <v-col cols="4" md="3">
           <v-text-field
@@ -3008,7 +3008,7 @@ watch(() => {
       break;
    }
 })
-
+const overlay = ref(true);
 const rules = {
   date : { required, },
   toWorkshop : { required },
