@@ -1,7 +1,7 @@
 // Composables
 import { createRouter, createWebHistory } from 'vue-router';
 import LayoutInformatique from '@/layouts/fluxInformatique/Layout.vue';
-
+import NotFound from '@/components/NotFound.vue';
 const routes = [
   {
     path: '/',
@@ -47,6 +47,11 @@ const routes = [
         component : ()=> import('@/views/FluxInformatique/ReadMovement.vue')
       }
     ]
+  },
+  {
+    path: '/:catchAll(.*)',
+    name: 'NotFound',
+    component: NotFound
   }
 ]
 

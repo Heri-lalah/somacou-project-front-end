@@ -104,7 +104,7 @@
           color="primary"
           label="Pièce"
           v-model="form.quantityPeace"
-          :disabled="form.quantityPeace>0"
+          :disabled="form.measure=='PEACE'"
           type="number"
           variant="underlined"
           ></v-text-field>
@@ -114,7 +114,7 @@
           color="primary"
           label="Poids"
           v-model="form.quantityWeight"
-          :disabled="form.quantityWeight>0"
+          :disabled="form.measure=='KG'"
           type="number"
           variant="underlined"
           ></v-text-field>
@@ -124,7 +124,7 @@
           color="primary"
           label="Longueur"
           v-model="form.quantityLength"
-          :disabled="form.quantityLength>0"
+          :disabled="form.measure=='METER'"
           type="number"
           variant="underlined"
           ></v-text-field>
@@ -3018,6 +3018,7 @@ const rules = {
   quantity : { required },
   objective : { required },
   sector : { required },
+  sourceWorkshop : { required },
 }
 
 const $v = useVuelidate(rules, form);
@@ -3031,10 +3032,9 @@ const handleSubmit = () => {
     snackbar.value = true;
     snackbarMessage.value = "Veillez remplir correctement tous les champs obligatoire";
     snackbarColor.value="danger"
+    console.log(form);
   }else{
-    snackbar.value = true;
-    snackbarMessage.value = "Juste test";
-    snackbarColor.value="success"
+    console.log(form, 'ok');
   }
 }
 </script>
