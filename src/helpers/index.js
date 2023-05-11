@@ -8,5 +8,8 @@ function formattedDate(value) {
   }
     return value.substring(0,10);
 }
+function dataFilter(articles, form) {
+  return articles.filter(el => el.substring(0, form.length) == form.toUpperCase())
+}
 
- export {formattedDate}
+ export {formattedDate, dataFilter}
