@@ -98,6 +98,7 @@
           label="Couleur"
           variant="underlined"
           v-model="form.color"
+          :error-messages="$v.color.$errors.map(e => e.$message)"
           @keypress="setFilterColors"
           >
         </v-text-field>
@@ -244,7 +245,6 @@ watchEffect(() => {
    form.date = formattedDate(form.date)
    form.article = form.article.toUpperCase();
    form.color = form.color.toUpperCase();
-
    switch (form.measure) {
     case "KG" :
       form.quantityWeight = form.quantity;
@@ -282,16 +282,17 @@ const rules = {
   idBon : { required : helpers.withMessage('Ce champ ne peut pas être vide', required) },
   quantity : { required : helpers.withMessage('Ce champ ne peut pas être vide', required) },
   objective : { required : helpers.withMessage('Ce champ ne peut pas être vide', required) },
-  sector : { required : helpers.withMessage('Ce champ ne peut pas être vide', required), colorRules },
+  color : { required : helpers.withMessage('Couleur inexistant', colorRules) },
+  sector : { required : helpers.withMessage('Ce champ ne peut pas être vide', required)},
   sourceWorkshop : { required : helpers.withMessage('Ce champ ne peut pas être vide', required) },
 }
 
 const $v = useVuelidate(rules, form);
 
 const handleSubmit = () => {
-  $v.value.$validate.call()
+  $v.value.$validate()
   const validationErrors = $v.value.$errors;
-
+  console.log($v);
   if(validationErrors.length > 0){
     errorCount.value = validationErrors.length
     snackbar.value = true;
