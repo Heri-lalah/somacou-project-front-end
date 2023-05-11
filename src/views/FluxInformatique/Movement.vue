@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="parent">
     <v-form>
       <v-row class="py-0 my-0">
           <v-col cols="4" md="3">
@@ -7,7 +7,7 @@
           color="primary"
           label="Date"
           v-model="form.date"
-          :error-messages="$v.date.$errors.map(e => e.$message = '')"
+          :error-messages="$v.date.$errors.map(e => e.$message)"
           @blur="$v.date.$touch"
           required
           :rules="[ v => !!v || '*']"
@@ -21,8 +21,9 @@
           v-model="form.toWorkshop"
           label="Atelier de déstination"
           variant="underlined"
-          :error-messages="$v.toWorkshop.$errors.map(e => e.$message = '')"
+          :error-messages="$v.toWorkshop.$errors.map(e => e.$message)"
           @input="$v.toWorkshop.$touch"
+          @blur="$v.toWorkshop.$touch"
           required
           :items="appStore.workshopdata"
           >
@@ -33,7 +34,8 @@
           color="primary"
           label="Numéro Bon"
           v-model="form.idBon"
-          :error-messages="$v.idBon.$errors.map(e => e.$message = '')"
+          :error-messages="$v.idBon.$errors.map(e => e.$message)"
+          @blur="$v.idBon.$touch"
           variant="underlined"
           ></v-text-field>
         </v-col>
@@ -54,12 +56,13 @@
           :label="form.stockEnabled ? 'combo Article' : 'Article  '"
           variant="underlined"
           v-model="form.article"
-          @keyup="setFilterArticle"
-          :error-messages="$v.article.$errors.map(e => e.$message = '')"
+          @keypress="setFilterArticle"
+          @keyup="$v.article.$touch"
+          :error-messages="$v.article.$errors.map(e => e.$message)"
           required
           >
         </v-text-field>
-        <ul v-if="filteredArticle">
+        <ul v-if="filteredArticle" id="articleList" style="width:500px">
           <li id="filteredArticle" v-for="(item, key) in filteredArticle" :key="key" @click="[form.article=item, filteredArticle ='']"> <v-btn id="article" block width="100" class="text-right">{{ item }}</v-btn> </li>
         </ul>
           <!-- <v-autocomplete
@@ -67,7 +70,7 @@
           :label="form.stockEnabled ? 'combo Article' : 'Article  '"
           variant="underlined"
           v-model="form.article"
-          :error-messages="$v.article.$errors.map(e => e.$message = '')"
+          :error-messages="$v.article.$errors.map(e => e.$message)"
           required
           :items="articles"
           >
@@ -82,24 +85,37 @@
           ></v-select>
         </v-col>
         <v-col cols="4" md="3">
-          <v-autocomplete
+          <!-- <v-autocomplete
           color="primary"
           label="Couleur"
           v-model="form.color"
           variant="underlined"
           :items="appStore.color"
           >
-          </v-autocomplete>
+          </v-autocomplete> -->
+          <v-text-field
+          color="primary"
+          label="Couleur"
+          variant="underlined"
+          v-model="form.color"
+          @keypress="setFilterColors"
+          >
+        </v-text-field>
+          <ul v-if="filteredColor" class="article" style="width:200px">
+            <li id="filteredColors" v-for="(item, key) in filteredColor" :key="key" @click="[form.color=item, filteredColor ='']"> <v-btn id="article" block class="text-right">{{ item }}</v-btn> </li>
+          </ul>
+
         </v-col>
       </v-row>
 
       <v-row>
-        <v-col cols="4" md="2" class="py-0 my-0">
+        <v-col cols="4" md="3" class="py-0 my-0">
           <v-text-field
           color="primary"
           label="Qté demandé"
           v-model="form.quantity"
-          :error-messages="$v.quantity.$errors.map(e => e.$message = '')"
+          :error-messages="$v.quantity.$errors.map(e => e.$message)"
+          @blur="$v.quantity.$touch"
           type="number"
           variant="underlined"
           ></v-text-field>
@@ -131,7 +147,7 @@
           variant="underlined"
           ></v-text-field>
         </v-col>
-        <v-col cols="4" md="3" class="py-0 my-0">
+        <v-col cols="4" md="2" class="py-0 my-0">
           <v-text-field
           color="primary"
           label="Longueur"
@@ -149,7 +165,8 @@
           color="primary"
           label="Objectif"
           v-model="form.objective"
-          :error-messages="$v.objective.$errors.map(e => e.$message = '')"
+          :error-messages="$v.objective.$errors.map(e => e.$message)"
+          @blur="$v.objective.$touch"
           variant="underlined"
           ></v-text-field>
         </v-col>
@@ -158,7 +175,8 @@
           color="primary"
           label="Secteur"
           v-model="form.sector"
-          :error-messages="$v.sector.$errors.map(e => e.$message = '')"
+          :error-messages="$v.sector.$errors.map(e => e.$message)"
+          @blur="$v.sector.$touch"
           variant="underlined"
           ></v-text-field>
         </v-col>
@@ -176,7 +194,7 @@
 import { ref, reactive, watchEffect} from "vue";
 import {formattedDate, dataFilter} from '@/helpers';
 import useVuelidate from "@vuelidate/core";
-import { required } from "@vuelidate/validators";
+import { required, helpers } from "@vuelidate/validators";
 import { useAppStore } from "@/store/app";
 const appStore = useAppStore()
 
@@ -204,6 +222,7 @@ const form = reactive({
   textRules : [v=> !! v || '*']
 })
 const filteredArticle = ref("");
+const filteredColor = ref("");
 const setFilterArticle = () => {
   if(form.article == ""){
     filteredArticle.value = []
@@ -211,10 +230,21 @@ const setFilterArticle = () => {
     filteredArticle.value = dataFilter(articles, form.article);
   }
 }
+const colors = appStore.color;
+
+const setFilterColors = () => {
+  if(form.color == ""){
+    filteredColor.value = []
+  }else{
+    filteredColor.value = dataFilter(colors, form.color);
+  }
+}
 
 watchEffect(() => {
    form.date = formattedDate(form.date)
    form.article = form.article.toUpperCase();
+   form.color = form.color.toUpperCase();
+
    switch (form.measure) {
     case "KG" :
       form.quantityWeight = form.quantity;
@@ -236,17 +266,24 @@ watchEffect(() => {
       break;
    }
 })
-const overlay = ref(true);
+
+const articleRules = (value) => articles.includes(value)
+const colorRules = (value) => colors.includes(value)
+
 const rules = {
-  date : { required, },
-  toWorkshop : { required },
+  date : { required : helpers.withMessage('Ce champ ne peut pas être vide', required)
+    , },
+  toWorkshop : { required : helpers.withMessage('Ce champ ne peut pas être vide', required) },
   //stockEnabled : {required},
-  article: {required},
-  idBon : { required },
-  quantity : { required },
-  objective : { required },
-  sector : { required },
-  sourceWorkshop : { required },
+  article: {
+    required : helpers.withMessage('Ce champ ne peut pas être vide', required),
+    articleRules : helpers.withMessage('Article introuvable ', articleRules)
+  },
+  idBon : { required : helpers.withMessage('Ce champ ne peut pas être vide', required) },
+  quantity : { required : helpers.withMessage('Ce champ ne peut pas être vide', required) },
+  objective : { required : helpers.withMessage('Ce champ ne peut pas être vide', required) },
+  sector : { required : helpers.withMessage('Ce champ ne peut pas être vide', required), colorRules },
+  sourceWorkshop : { required : helpers.withMessage('Ce champ ne peut pas être vide', required) },
 }
 
 const $v = useVuelidate(rules, form);
@@ -266,31 +303,18 @@ const handleSubmit = () => {
   }
 }
 </script>
-<style scoped>
+<style lang="scss">
 li{
   list-style : none;
 }
-/*ul{
-  margin: 0;
+.parent {
+  position: relative;
+  ul{
+    position: absolute;
+    max-height: 200px;
+    overflow: hidden;
+    left: 50;
+    z-index: 5000;
+  }
 }
-#filteredArticle{
-  list-style: none;
-  padding : 0 4px ;
-}
-#filteredArticle:hover{
-  background-color: rgb(201, 199, 199);
-}
-
-button#article{
-  text-align: left;
-  display: block;
-  width: 100%;
-  padding : 0 4px ;
-}
-button#article:focus{
-  background-color: #2196F3;
-  font-weight: bold;
-  border: solid 1px #2196F3;
-  color: #FFFFFF;
-}*/
 </style>
